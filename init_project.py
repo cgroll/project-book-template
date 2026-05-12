@@ -95,12 +95,7 @@ def main() -> None:
     replace_in_file(f, 'packages = ["pkg"]', f'packages = ["{abbrev}"]')
     print("  pyproject.toml updated")
 
-    # 3. Snakefile
-    f = ROOT / "Snakefile"
-    replace_in_file(f, 'PROJECT_NAME = "my-project"', f'PROJECT_NAME = "{project_name}"')
-    print("  Snakefile updated")
-
-    # 4. pipeline scripts
+    # 3. pipeline scripts
     for py_file in (ROOT / "pipeline").glob("*.py"):
         replace_in_file(py_file, "from pkg.", f"from {abbrev}.")
     print("  pipeline/ imports updated")
@@ -144,7 +139,6 @@ def main() -> None:
 Done! Next steps:
 
   uv sync
-  uv run python -m ipykernel install --user --name {project_name}
   make dry-run
   make run
 

@@ -19,10 +19,6 @@
 # Project-wide settings
 # ---------------------------------------------------------------------------
 
-# Kernel name must match the one registered by `uv run python -m ipykernel
-# install --user --name <PROJECT_NAME>`.  Update after renaming the project.
-PROJECT_NAME = "my-project"
-
 # List every notebook that the book should contain.
 # Extend this list when you add a new analysis script.
 ANALYSIS_NOTEBOOKS = [
@@ -71,7 +67,7 @@ rule process_example:
     shell:
         """
         MPLBACKEND=Agg uv run jupytext --to notebook --execute \
-            --set-kernel {PROJECT_NAME} \
+            --set-kernel python3 \
             --output {output.notebook} {input.script} && \
         uv run python -c "
 import nbformat

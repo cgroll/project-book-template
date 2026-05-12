@@ -43,11 +43,7 @@ result, and removes itself.
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
 uv sync
-uv run python -m ipykernel install --user --name financial-market-returns
 ```
-
-The kernel name must match `PROJECT_NAME` in `Snakefile` (the init script set
-this for you).
 
 ### 4. Verify the example pipeline
 

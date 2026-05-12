@@ -171,7 +171,7 @@ rule process_my_analysis:
     shell:
         """
         MPLBACKEND=Agg uv run jupytext --to notebook --execute \
-            --set-kernel {PROJECT_NAME} \
+            --set-kernel python3 \
             --output {output.notebook} {input.script} && \
         uv run python -c "
 import nbformat
