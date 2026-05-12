@@ -4,7 +4,7 @@
     python init_project.py
 
 The project name is read from the git remote URL automatically.
-You will only be prompted for a short package abbreviation (e.g. 'fmr').
+You will be prompted for a package abbreviation and optionally a GitHub username.
 """
 
 import re
@@ -57,6 +57,13 @@ def ask_abbreviation(project_name: str) -> str:
             return abbrev
 
 
+def ask_github_username() -> str | None:
+    print("\nGitHub username (used in book/myst.yml for the GitHub link).")
+    print("Press Enter to skip if you only want to build the book locally.")
+    username = input("\nGitHub username [skip]: ").strip()
+    return username if username else None
+
+
 def replace_in_file(path: Path, old: str, new: str) -> bool:
     text = path.read_text()
     if old not in text:
@@ -72,9 +79,11 @@ def title_from_kebab(name: str) -> str:
 def main() -> None:
     project_name = get_project_name()
     abbrev = ask_abbreviation(project_name)
+    github_username = ask_github_username()
     title = title_from_kebab(project_name)
 
-    print(f"\nInitializing '{project_name}' (package: '{abbrev}') …\n")
+    github_label = f"{github_username}/{project_name}" if github_username else "local only"
+    print(f"\nInitializing '{project_name}' (package: '{abbrev}', github: {github_label}) …\n")
 
     # 1. Rename pkg/ → <abbrev>/
     shutil.move(str(ROOT / "pkg"), str(ROOT / abbrev))
@@ -100,7 +109,11 @@ def main() -> None:
     f = ROOT / "book" / "myst.yml"
     text = f.read_text()
     text = text.replace("My Research Project", title)
-    text = re.sub(r"github: .+", f"github: OWNER/{project_name}", text)
+    if github_username:
+        text = re.sub(r"github: .+", f"github: {github_username}/{project_name}", text)
+    else:
+        # Remove the github line entirely so MyST doesn't show a broken link
+        text = re.sub(r"\s*github: .+\n", "\n", text)
     f.write_text(text)
     print("  book/myst.yml updated")
 
